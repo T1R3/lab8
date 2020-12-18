@@ -15,7 +15,7 @@ void NewGraphNeOr(int** G, int n) {
 				G[i][j] = 0;
 			}
 			if (i < j) {
-				if (rand() % 100 > 20) {
+				if (rand() % 100 > 50) {
 					G[i][j] = rand() % 15;
 				}
 				else {
@@ -55,11 +55,10 @@ void BFSD(int s, int** G, int* dist, int n) {
 	printf("\n");
 }
 
-
 int main() {
 	int** G;	// указатель на указатель на строку элементов
 	int* ex;	// эксцентриситет
-	int* dist;
+	int* dist, *step;
 	int i, j, n, max = 0, min = 0;
 
 
@@ -76,6 +75,7 @@ int main() {
 	}
 	dist = (int*)malloc(n * sizeof(int));
 	ex = (int*)malloc(n * sizeof(int));
+	step = (int*)malloc(n * sizeof(int));
 
 	printf("Неориентированный взвешенный граф \n");
 	NewGraphNeOr(G, n);
@@ -132,16 +132,34 @@ int main() {
 			printf("%d\t", i);
 		}
 	}
+	printf("\n");
 
-	for (i = 0; i < n; i++) {
-
+	
+	for (int i = 0; i < n; i++) {
+		step[i] = 0;
+		for (int j = 0; j < n; j++) {
+			if (G[i][j] != 0)
+				step[i]++;
+		}
+		switch (step[i]) {
+		case 0: printf("Вершина %d изолированая\n", i);
+			break;
+		case 1:printf("Вершина %d концевая\n", i );
+			break;
+		default:
+			if (step[i] == n-1)
+				printf("Вершина %d доминирующая\n", i );
+		}
 	}
 
-
+	for (i = 0; i < n; i++) {
+		free(G[i]);
+	}
 	free(G);
 	free(ex);
+	free(dist);
+	free(step);
 
 	getchar();
 	getchar();
-
 }
